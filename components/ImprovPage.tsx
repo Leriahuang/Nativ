@@ -32,7 +32,7 @@ const ImprovPage: React.FC<ImprovPageProps> = ({ words, language }) => {
     if (isGenerating) {
       interval = window.setInterval(() => {
         setCurrentMessageIndex(prev => (prev + 1) % loadingMessages.length);
-      }, 2500);
+      }, 1800);
     }
     return () => clearInterval(interval);
   }, [isGenerating]);
@@ -94,9 +94,9 @@ const ImprovPage: React.FC<ImprovPageProps> = ({ words, language }) => {
           </div>
           <Sparkles className="absolute -top-2 -right-2 text-[#FFD60A] animate-pulse" />
         </div>
-        <div className="text-center space-y-2">
-          <h2 className="text-2xl font-bold transition-all duration-500">{loadingMessages[currentMessageIndex]}</h2>
-          <p className="text-gray-500">Wait for it... it's going to be legendary.</p>
+        <div className="text-center space-y-3">
+          <h2 className="text-2xl font-black transition-all duration-500">{loadingMessages[currentMessageIndex]}</h2>
+          <p className="text-gray-400 text-sm font-medium">Standardizing the witty bits to &lt; 1 minute...</p>
         </div>
       </div>
     );
@@ -106,35 +106,35 @@ const ImprovPage: React.FC<ImprovPageProps> = ({ words, language }) => {
     return (
       <div className="p-6 space-y-8 animate-in slide-in-from-bottom-8 duration-700">
         <header className="flex justify-between items-start">
-          <button onClick={() => { setStory(null); stopPodcast(); }} className="text-gray-400 font-bold">Back</button>
+          <button onClick={() => { setStory(null); stopPodcast(); }} className="text-gray-400 font-bold hover:text-gray-600 transition-colors">Back</button>
           <div className="text-center">
-            <span className="text-[10px] font-bold uppercase tracking-widest text-[#FFD60A]">Improv Story</span>
-            <h2 className="text-3xl font-bold">{story.title}</h2>
+            <span className="text-[10px] font-black uppercase tracking-widest text-[#FFD60A]">1-Minute Improv</span>
+            <h2 className="text-3xl font-black leading-tight mt-1">{story.title}</h2>
           </div>
           <div className="w-8" />
         </header>
 
-        <div className="bg-white rounded-3xl p-10 shadow-2xl flex flex-col items-center space-y-12">
+        <div className="bg-white rounded-[40px] p-8 shadow-2xl flex flex-col items-center space-y-10 border border-gray-50">
           <div className="relative">
-             <div className={`w-48 h-48 rounded-full bg-[#F2F2F7] flex items-center justify-center border-8 border-white shadow-inner transition-all duration-1000 ${isPlaying ? 'scale-110' : 'scale-100'}`}>
-                <Mic2 className={`w-20 h-20 ${isPlaying ? 'text-[#007AFF] animate-pulse' : 'text-gray-300'}`} />
+             <div className={`w-40 h-40 rounded-full bg-[#F2F2F7] flex items-center justify-center border-[6px] border-white shadow-inner transition-all duration-1000 ${isPlaying ? 'scale-105 rotate-3' : 'scale-100'}`}>
+                <Mic2 className={`w-16 h-16 ${isPlaying ? 'text-[#007AFF] animate-pulse' : 'text-gray-300'}`} />
              </div>
              {isPlaying && (
                 <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                  <div className="w-full h-full border-4 border-[#007AFF] rounded-full animate-ping opacity-20" />
+                  <div className="w-full h-full border-2 border-[#007AFF] rounded-full animate-ping opacity-10" />
                 </div>
              )}
           </div>
 
           <div className="flex items-center space-x-6">
-            <button onClick={() => { stopPodcast(); playPodcast(); }} className="p-4 bg-gray-100 rounded-full hover:bg-gray-200 transition-colors">
+            <button onClick={() => { stopPodcast(); playPodcast(); }} className="p-4 bg-gray-50 rounded-full hover:bg-gray-100 transition-colors text-gray-400">
               <RotateCcw className="w-6 h-6" />
             </button>
             <button 
               onClick={isPlaying ? stopPodcast : playPodcast}
-              className="w-24 h-24 bg-[#FFD60A] rounded-full flex items-center justify-center shadow-xl shadow-[#FFD60A]/30 active:scale-95 transition-all"
+              className="w-20 h-20 bg-[#FFD60A] rounded-full flex items-center justify-center shadow-xl shadow-[#FFD60A]/20 active:scale-95 transition-all group"
             >
-              {isPlaying ? <Pause className="w-10 h-10 text-white fill-white" /> : <Play className="w-10 h-10 text-white fill-white ml-2" />}
+              {isPlaying ? <Pause className="w-8 h-8 text-white fill-white" /> : <Play className="w-8 h-8 text-white fill-white ml-1.5" />}
             </button>
             <div className="w-14" />
           </div>
@@ -142,20 +142,20 @@ const ImprovPage: React.FC<ImprovPageProps> = ({ words, language }) => {
           <div className="w-full space-y-4">
             <button 
               onClick={() => setShowTranscript(!showTranscript)}
-              className="w-full flex justify-between items-center py-4 px-6 bg-[#F2F2F7] rounded-2xl font-bold text-sm"
+              className="w-full flex justify-between items-center py-4 px-6 bg-[#F2F2F7]/50 rounded-2xl font-black text-xs uppercase tracking-widest text-gray-400"
             >
-              <span>Transcript</span>
+              <span>{showTranscript ? 'Hide' : 'Show'} Transcript</span>
               {showTranscript ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
             </button>
             
             {showTranscript && (
-              <div className="p-6 bg-white border border-gray-100 rounded-2xl text-lg leading-relaxed space-y-4 animate-in fade-in duration-300">
-                <p>
+              <div className="p-6 bg-white border border-gray-100 rounded-3xl text-md leading-relaxed space-y-4 animate-in fade-in slide-in-from-top-2 duration-300 shadow-inner">
+                <p className="text-gray-800 font-medium">
                   {story.text.split(' ').map((word, i) => {
                     const cleanWord = word.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"").toLowerCase();
                     const isKeyword = story.wordsUsed.some(w => w.toLowerCase().includes(cleanWord) || cleanWord.includes(w.toLowerCase()));
                     return (
-                      <span key={i} className={isKeyword ? "bg-[#FFD60A]/30 font-bold px-1 rounded mx-0.5" : ""}>
+                      <span key={i} className={isKeyword ? "bg-[#FFD60A]/40 font-black px-1 rounded-md mx-0.5 text-[#1C1C1E]" : ""}>
                         {word}{' '}
                       </span>
                     );
@@ -168,9 +168,9 @@ const ImprovPage: React.FC<ImprovPageProps> = ({ words, language }) => {
 
         <button 
           onClick={() => { setStory(null); stopPodcast(); }}
-          className="w-full bg-[#1C1C1E] text-white py-4 rounded-2xl font-bold shadow-lg flex items-center justify-center space-x-2 active:scale-95 transition-all"
+          className="w-full bg-[#1C1C1E] text-white py-4.5 rounded-2xl font-black text-sm uppercase tracking-widest shadow-lg flex items-center justify-center space-x-2 active:scale-95 transition-all"
         >
-          <span>Create New Story</span>
+          <span>Regenerate Punchline</span>
         </button>
       </div>
     );
@@ -179,18 +179,18 @@ const ImprovPage: React.FC<ImprovPageProps> = ({ words, language }) => {
   return (
     <div className="p-6 space-y-8 h-full flex flex-col">
       <header>
-        <h1 className="text-4xl font-bold text-[#1C1C1E]">Improv</h1>
-        <p className="text-gray-500">Pick 5-10 words to generate a joke.</p>
+        <h1 className="text-4xl font-black text-[#1C1C1E]">Improv</h1>
+        <p className="text-gray-500 font-medium text-sm">Select 5-10 words for a punchy 1-min story.</p>
       </header>
 
-      <div className="flex-1 overflow-y-auto pr-2">
+      <div className="flex-1 overflow-y-auto pr-1">
         <div className="grid grid-cols-1 gap-3">
           {words.length === 0 && (
             <div className="py-20 text-center space-y-4">
-              <div className="w-16 h-16 bg-gray-100 rounded-full mx-auto flex items-center justify-center">
-                <Mic2 className="text-gray-300" />
+              <div className="w-16 h-16 bg-gray-50 rounded-2xl mx-auto flex items-center justify-center">
+                <Mic2 className="text-gray-200" />
               </div>
-              <p className="text-gray-400">Save some words first!</p>
+              <p className="text-gray-400 font-bold uppercase text-[10px] tracking-widest">Your notebook is empty</p>
             </div>
           )}
           {words.map(w => (
@@ -200,34 +200,36 @@ const ImprovPage: React.FC<ImprovPageProps> = ({ words, language }) => {
               className={`p-4 rounded-2xl flex justify-between items-center transition-all border-2 ${
                 selectedWordIds.has(w.id) 
                   ? 'bg-white border-[#FFD60A] shadow-md' 
-                  : 'bg-white border-transparent shadow-sm'
+                  : 'bg-white border-transparent shadow-sm hover:border-gray-100'
               }`}
             >
               <div className="text-left">
-                <p className="font-bold text-lg">{w.word}</p>
-                <p className="text-xs text-gray-500">{w.meaning}</p>
+                <p className="font-black text-lg text-[#1C1C1E]">{w.word}</p>
+                <p className="text-[11px] text-gray-400 font-bold uppercase tracking-tight truncate max-w-[200px]">{w.meaning}</p>
               </div>
-              {selectedWordIds.has(w.id) && <CheckCircle2 className="text-[#FFD60A] w-6 h-6" />}
+              <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors ${selectedWordIds.has(w.id) ? 'bg-[#FFD60A] border-[#FFD60A]' : 'border-gray-100'}`}>
+                {selectedWordIds.has(w.id) && <CheckCircle2 className="text-white w-4 h-4" />}
+              </div>
             </button>
           ))}
         </div>
       </div>
 
       <div className="pt-4 bg-[#F2F2F7] sticky bottom-0 border-t border-gray-100 space-y-4">
-        <div className="flex justify-between items-center px-2">
-          <span className="text-sm font-bold">{selectedWordIds.size}/10 selected</span>
-          <span className="text-xs text-gray-400 uppercase font-bold tracking-widest">Need at least 5</span>
+        <div className="flex justify-between items-center px-1">
+          <span className="text-xs font-black uppercase tracking-widest text-gray-400">{selectedWordIds.size}/10 selected</span>
+          <span className="text-[10px] text-gray-400 font-bold uppercase tracking-tight">Need 5-10 words</span>
         </div>
         <button
           disabled={selectedWordIds.size < 5}
           onClick={handleGenerate}
-          className={`w-full py-4 rounded-2xl font-bold text-lg flex items-center justify-center space-x-2 transition-all ${
+          className={`w-full py-4.5 rounded-2xl font-black text-sm uppercase tracking-widest flex items-center justify-center space-x-2 transition-all ${
             selectedWordIds.size >= 5 
-              ? 'bg-[#FFD60A] text-white shadow-lg active:scale-95' 
+              ? 'bg-[#FFD60A] text-white shadow-lg active:scale-95 active:shadow-none' 
               : 'bg-gray-200 text-gray-400 cursor-not-allowed'
           }`}
         >
-          <Mic2 className="w-5 h-5" />
+          <Mic2 className="w-4 h-4" />
           <span>Generate Story</span>
         </button>
       </div>

@@ -7,8 +7,9 @@ const ai = new GoogleGenAI({ apiKey: process.env.API_KEY || '' });
 export async function searchWord(word: string, lang: LearningLanguage): Promise<DictionaryEntry> {
   const response = await ai.models.generateContent({
     model: 'gemini-3-flash-preview',
-    contents: `Provide a detailed dictionary entry for the ${lang} word "${word}" including IPA pronunciation, English meaning, part of speech, gender (if applicable), 3 common colloquial expressions, 3 synonyms with English translations, and 3 source-tagged example sentences (YouTube, Podcast, Informal). Target advanced B2+ learners.`,
+    contents: `Fast dictionary entry for "${word}" in ${lang}. Focus on high-frequency colloquial use. B2+ level. Keep strings short. 2 expressions max, 2 examples max.`,
     config: {
+      thinkingConfig: { thinkingBudget: 0 },
       responseMimeType: "application/json",
       responseSchema: {
         type: Type.OBJECT,
@@ -24,8 +25,7 @@ export async function searchWord(word: string, lang: LearningLanguage): Promise<
               type: Type.OBJECT,
               properties: {
                 original: { type: Type.STRING },
-                translation: { type: Type.STRING },
-                note: { type: Type.STRING }
+                translation: { type: Type.STRING }
               },
               required: ["original", "translation"]
             }
@@ -65,9 +65,14 @@ export async function searchWord(word: string, lang: LearningLanguage): Promise<
 
 export async function generatePodcast(words: string[], lang: LearningLanguage): Promise<PodcastStory> {
   const response = await ai.models.generateContent({
-    model: 'gemini-3-pro-preview',
-    contents: `Write a short (approx 150 words) humorous narrative/joke in ${lang} incorporating exactly these words: ${words.join(', ')}. Style: Observational humor like Louis C.K. or Fleabag. Provide a title, the ${lang} text, and confirm the words used.`,
+    model: 'gemini-3-flash-preview',
+    contents: `Write a PUNCHY, WITTY, and HUMOROUS 1-minute comedy monologue in ${lang} using these words: ${words.join(', ')}. 
+    Length: Exactly 120-150 words. 
+    Style: Louis C.K. (observational) or Fleabag (sharp asides). 
+    Ensure the humor is sophisticated and the story reaches a punchline within 60 seconds.
+    Provide title, text, and list wordsUsed.`,
     config: {
+      thinkingConfig: { thinkingBudget: 0 },
       responseMimeType: "application/json",
       responseSchema: {
         type: Type.OBJECT,
@@ -84,7 +89,7 @@ export async function generatePodcast(words: string[], lang: LearningLanguage): 
 }
 
 export async function speakText(text: string, lang: LearningLanguage): Promise<string> {
-  const voice = lang === 'French' ? 'Kore' : 'Puck'; // Just placeholders
+  const voice = lang === 'French' ? 'Kore' : 'Puck';
   const response = await ai.models.generateContent({
     model: "gemini-2.5-flash-preview-tts",
     contents: [{ parts: [{ text }] }],
