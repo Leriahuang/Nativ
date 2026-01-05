@@ -11,11 +11,17 @@ interface ImprovPageProps {
 }
 
 const loadingMessages = [
-  "Teaching AI to be funny...",
+  "Native nuance, incoming...",
   "Adding colloquial spice...",
   "Polishing the punchline...",
   "Consulting native comedians...",
   "Translating wit to wisdom...",
+  "Gen-Z slang checkpoint...",
+  "Research suggests humor boosts memory...",
+  "Laugh now, remember later...",
+  "Punchy narrative, sticky vocab...",
+  "We made all these up just to help you manifest your excellent French...",
+
 ];
 
 const ImprovPage: React.FC<ImprovPageProps> = ({ words, language }) => {
@@ -171,7 +177,7 @@ const ImprovPage: React.FC<ImprovPageProps> = ({ words, language }) => {
           onClick={() => { setStory(null); stopPodcast(); }}
           className="w-full bg-[#1C1C1E] text-white py-6 rounded-3xl font-black text-xl uppercase tracking-widest shadow-xl flex items-center justify-center space-x-3 active:scale-[0.97] transition-all mb-4"
         >
-          <span>Regenerate Punchline</span>
+          <span>Regenerate </span>
         </button>
       </div>
     );
