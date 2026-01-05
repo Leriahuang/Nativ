@@ -14,17 +14,17 @@ const Logo: React.FC<LogoProps> = ({ className = "", size = 200 }) => {
     >
       <img 
         src="logo.png" 
-        alt="Native Logo" 
+        alt="Speak Like Native Logo" 
         className="w-full h-auto object-contain"
         loading="eager"
         style={{ maxWidth: '100%' }}
         onError={(e) => {
-          // Fallback if logo.png is missing or fails to load
+          // Robust fallback if logo.png is missing: renders a stylized text logo
           const target = e.target as HTMLImageElement;
           target.style.display = 'none';
           const parent = target.parentElement;
           if (parent) {
-            parent.innerHTML = '<div class="font-black text-3xl tracking-tighter text-[#1C1C1E] py-4">NATIVE</div>';
+            parent.innerHTML = '<div class="font-black text-3xl tracking-tighter text-[#1C1C1E] py-4 border-y-4 border-[#FFD60A]">NATIVE</div>';
           }
         }}
       />
