@@ -9,19 +9,23 @@ interface LogoProps {
 const Logo: React.FC<LogoProps> = ({ className = "", size = 200 }) => {
   return (
     <div 
-      className={`flex items-center justify-center ${className}`} 
+      className={`flex items-center justify-center transition-all duration-500 ${className}`} 
       style={{ width: size, height: 'auto' }}
     >
       <img 
         src="logo.png" 
         alt="Native Logo" 
-        className="w-full h-auto object-contain transition-opacity duration-300"
+        className="w-full h-auto object-contain"
         loading="eager"
+        style={{ maxWidth: '100%' }}
         onError={(e) => {
-          // Fallback UI if the image file is missing
+          // Fallback if logo.png is missing or fails to load
           const target = e.target as HTMLImageElement;
           target.style.display = 'none';
-          target.parentElement!.innerHTML = '<div class="font-black text-2xl tracking-tighter">NATIVE</div>';
+          const parent = target.parentElement;
+          if (parent) {
+            parent.innerHTML = '<div class="font-black text-3xl tracking-tighter text-[#1C1C1E] py-4">NATIVE</div>';
+          }
         }}
       />
     </div>
