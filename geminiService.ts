@@ -2,12 +2,15 @@
 import { GoogleGenAI, Type, Modality } from "@google/genai";
 import { DictionaryEntry, LearningLanguage, PodcastStory } from "./types";
 
+// Ensure we have an API key or a fallback during initialization
 const ai = new GoogleGenAI({ apiKey: process.env.API_KEY || '' });
 
 export async function searchWord(word: string, lang: LearningLanguage): Promise<DictionaryEntry> {
   const response = await ai.models.generateContent({
     model: 'gemini-3-flash-preview',
-    contents: `Fast dictionary entry for "${word}" in ${lang}. Focus on high-frequency colloquial use. B2+ level. Keep strings short. 2 expressions max, 2 examples max.`,
+    contents: `Provide a detailed dictionary entry for the word "${word}" in ${lang} for an advanced learner (B2+). 
+    Focus on colloquialisms, slang, and high-frequency usage. 
+    Output must be in JSON format.`,
     config: {
       thinkingConfig: { thinkingBudget: 0 },
       responseMimeType: "application/json",
@@ -66,11 +69,9 @@ export async function searchWord(word: string, lang: LearningLanguage): Promise<
 export async function generatePodcast(words: string[], lang: LearningLanguage): Promise<PodcastStory> {
   const response = await ai.models.generateContent({
     model: 'gemini-3-flash-preview',
-    contents: `Write a PUNCHY, WITTY, and HUMOROUS 1-minute comedy monologue in ${lang} using these words: ${words.join(', ')}. 
-    Length: Exactly 120-150 words. 
-    Style: Louis C.K. (observational) or Fleabag (sharp asides). 
-    Ensure the humor is sophisticated and the story reaches a punchline within 60 seconds.
-    Provide title, text, and list wordsUsed.`,
+    contents: `Write a HILARIOUS and WITTY 1-minute comedy monologue in ${lang} that naturally incorporates these words: ${words.join(', ')}. 
+    The style should be sharp, conversational, and observational (like a Netflix comedy special). 
+    Provide the title, the monologue text, and the specific list of vocabulary words used.`,
     config: {
       thinkingConfig: { thinkingBudget: 0 },
       responseMimeType: "application/json",
