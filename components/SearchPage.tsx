@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { Search, Volume2, Bookmark, BookmarkCheck, Loader2, History, X } from 'lucide-react';
+import { Search, Volume2, Bookmark, BookmarkCheck, Loader2, X } from 'lucide-react';
 import { DictionaryEntry, LearningLanguage, SavedWord } from '../types';
 import { searchWord, speakText, decodeAudio } from '../geminiService';
 import Logo from './Logo';
@@ -11,7 +11,6 @@ interface SearchPageProps {
   savedWords: SavedWord[];
 }
 
-// Client-side cache for instant repeat results
 const searchCache: Record<string, DictionaryEntry> = {};
 
 const SearchPage: React.FC<SearchPageProps> = ({ language, onSave, savedWords }) => {
@@ -29,7 +28,6 @@ const SearchPage: React.FC<SearchPageProps> = ({ language, onSave, savedWords })
     const cleanQuery = word.trim().toLowerCase();
     if (!cleanQuery) return;
 
-    // Return cached result immediately if available
     if (searchCache[cleanQuery]) {
       setResult(searchCache[cleanQuery]);
       return;
@@ -68,15 +66,13 @@ const SearchPage: React.FC<SearchPageProps> = ({ language, onSave, savedWords })
   return (
     <div className={`p-5 pb-20 min-h-full flex flex-col transition-all duration-300 ${!result && !loading ? 'justify-center items-center' : 'justify-start'}`}>
       
-      {/* Search Header Area - Only visible on landing */}
       {!result && !loading && (
-        <div className="text-center mb-6 animate-in fade-in zoom-in-95 duration-700">
-          <Logo size={240} className="mb-4 hover:scale-105 transition-transform duration-500 cursor-pointer" />
-          <p className="text-gray-400 text-sm font-bold uppercase tracking-[0.2em] mt-2">{language} Excellence</p>
+        <div className="text-center mb-8 animate-in fade-in zoom-in-95 duration-700">
+          <Logo size={280} className="mx-auto mb-2 hover:scale-[1.02] transition-transform duration-500 cursor-pointer" />
+          <p className="text-gray-400 text-[10px] font-black uppercase tracking-[0.3em] opacity-60">Elevate your {language}</p>
         </div>
       )}
 
-      {/* Search Bar - Wider and more prominent */}
       <div className={`relative w-full transition-all duration-500 ${result ? 'mt-2 mb-6' : 'max-w-xs mx-auto'}`}>
         <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
           <Search className="text-gray-400 w-5 h-5" />
@@ -87,7 +83,7 @@ const SearchPage: React.FC<SearchPageProps> = ({ language, onSave, savedWords })
           onChange={(e) => setQuery(e.target.value)}
           onKeyDown={(e) => e.key === 'Enter' && handleSearch(query)}
           placeholder={`Search ${language}...`}
-          className="w-full bg-white rounded-2xl py-3.5 pl-12 pr-12 text-md shadow-sm border-none focus:ring-2 focus:ring-[#FFD60A] transition-all"
+          className="w-full bg-white rounded-2xl py-4 pl-12 pr-12 text-md shadow-sm border-none focus:ring-2 focus:ring-[#FFD60A] transition-all"
         />
         <div className="absolute inset-y-0 right-3 flex items-center space-x-1">
           {query && !loading && (
@@ -99,7 +95,6 @@ const SearchPage: React.FC<SearchPageProps> = ({ language, onSave, savedWords })
         </div>
       </div>
 
-      {/* History Area */}
       {!result && !loading && history.length > 0 && (
         <div className="w-full max-w-xs mt-4 flex flex-wrap gap-2 justify-center animate-in fade-in slide-in-from-bottom-2 duration-500">
           {history.slice(0, 6).map(h => (
@@ -110,12 +105,9 @@ const SearchPage: React.FC<SearchPageProps> = ({ language, onSave, savedWords })
         </div>
       )}
 
-      {/* Results - Slightly expanded for better readability (roughly 1.2-1.5 screens) */}
       {result && (
         <div className="w-full space-y-4 animate-in fade-in slide-in-from-bottom-2 duration-300">
           <div className="bg-white rounded-3xl p-6 shadow-sm space-y-6">
-            
-            {/* Main Word Header */}
             <div className="flex justify-between items-start">
               <div className="space-y-1">
                 <div className="flex items-center space-x-3">
@@ -139,7 +131,6 @@ const SearchPage: React.FC<SearchPageProps> = ({ language, onSave, savedWords })
               </button>
             </div>
 
-            {/* Meaning & Synonyms Section */}
             <div className="space-y-3">
               <p className="text-xl font-bold text-[#1C1C1E] leading-tight">{result.meaning}</p>
               <div className="flex flex-wrap gap-2">
@@ -151,7 +142,6 @@ const SearchPage: React.FC<SearchPageProps> = ({ language, onSave, savedWords })
               </div>
             </div>
 
-            {/* Expressions - More Breathing Room */}
             <div className="pt-4 border-t border-gray-100 space-y-3">
               <h4 className="text-[10px] font-black text-gray-400 uppercase tracking-widest px-1">Colloquial Usage</h4>
               <div className="grid grid-cols-1 gap-2.5">
@@ -169,7 +159,6 @@ const SearchPage: React.FC<SearchPageProps> = ({ language, onSave, savedWords })
               </div>
             </div>
 
-            {/* Examples - Enhanced Layout */}
             <div className="pt-4 border-t border-gray-100 space-y-3">
               <h4 className="text-[10px] font-black text-gray-400 uppercase tracking-widest px-1">In Context</h4>
               {result.examples.map((ex, i) => (
