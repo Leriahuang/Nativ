@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Globe, Book, LogOut, Heart, Github } from 'lucide-react';
 import { LearningLanguage } from '../types';
@@ -55,7 +54,7 @@ const SettingsPage: React.FC<SettingsPageProps> = ({ language, setLanguage }) =>
       </section>
 
       <section className="space-y-4">
-        <h3 className="text-xs font-bold uppercase text-gray-400 tracking-widest px-1">About Native</h3>
+        <h3 className="text-xs font-bold uppercase text-gray-400 tracking-widest px-1">About Nativ</h3>
         <div className="bg-white rounded-3xl p-6 shadow-sm space-y-4">
           <button className="w-full flex justify-between items-center py-2 group">
              <div className="flex items-center space-x-4">
@@ -79,7 +78,7 @@ const SettingsPage: React.FC<SettingsPageProps> = ({ language, setLanguage }) =>
           <span>Reset All Data</span>
         </button>
         <p className="text-center text-[10px] text-gray-400 mt-6 font-bold uppercase tracking-widest">
-          Native v1.0.4 • Crafted with Gemini
+          Nativ v1.0.4 • Crafted with Gemini
         </p>
       </section>
     </div>

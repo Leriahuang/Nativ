@@ -1,4 +1,3 @@
-
 import React from 'react';
 
 interface LogoProps {
@@ -14,7 +13,7 @@ const Logo: React.FC<LogoProps> = ({ className = "", size = 200 }) => {
     >
       <img 
         src="logo.png" 
-        alt="Speak Like Native Logo" 
+        alt="Speak Like Nativ Logo" 
         className="w-full h-auto object-contain"
         loading="eager"
         style={{ maxWidth: '100%' }}
@@ -24,7 +23,7 @@ const Logo: React.FC<LogoProps> = ({ className = "", size = 200 }) => {
           target.style.display = 'none';
           const parent = target.parentElement;
           if (parent) {
-            parent.innerHTML = '<div class="font-black text-3xl tracking-tighter text-[#1C1C1E] py-4 border-y-4 border-[#FFD60A]">NATIVE</div>';
+            parent.innerHTML = '<div class="font-black text-3xl tracking-tighter text-[#1C1C1E] py-4 border-y-4 border-[#FFD60A]">NATIV</div>';
           }
         }}
       />

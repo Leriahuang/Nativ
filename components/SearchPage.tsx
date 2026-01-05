@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { Search, Volume2, Bookmark, BookmarkCheck, Loader2, X } from 'lucide-react';
+import { Search, Volume2, Bookmark, BookmarkCheck, Loader2, X, Pin, Trash2 } from 'lucide-react';
 import { DictionaryEntry, LearningLanguage, SavedWord } from '../types';
 import { searchWord, speakText, decodeAudio } from '../geminiService';
 import Logo from './Logo';
@@ -17,16 +17,40 @@ const SearchPage: React.FC<SearchPageProps> = ({ language, onSave, savedWords })
   const [query, setQuery] = useState('');
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<DictionaryEntry | null>(null);
+  
+  // History & Pinned State
   const [history, setHistory] = useState<string[]>([]);
+  const [pinned, setPinned] = useState<string[]>([]);
 
+  // Load from LocalStorage
   useEffect(() => {
     const storedHistory = localStorage.getItem('native_search_history');
     if (storedHistory) setHistory(JSON.parse(storedHistory));
+
+    const storedPinned = localStorage.getItem('native_pinned_searches');
+    if (storedPinned) setPinned(JSON.parse(storedPinned));
   }, []);
+
+  // Save to LocalStorage
+  useEffect(() => {
+    localStorage.setItem('native_search_history', JSON.stringify(history));
+  }, [history]);
+
+  useEffect(() => {
+    localStorage.setItem('native_pinned_searches', JSON.stringify(pinned));
+  }, [pinned]);
 
   const handleSearch = async (word: string) => {
     const cleanQuery = word.trim().toLowerCase();
     if (!cleanQuery) return;
+
+    // Update History (if not already pinned)
+    if (!pinned.includes(cleanQuery)) {
+      setHistory(prev => {
+        const filtered = prev.filter(h => h !== cleanQuery);
+        return [cleanQuery, ...filtered].slice(0, 10);
+      });
+    }
 
     if (searchCache[cleanQuery]) {
       setResult(searchCache[cleanQuery]);
@@ -38,15 +62,28 @@ const SearchPage: React.FC<SearchPageProps> = ({ language, onSave, savedWords })
       const data = await searchWord(cleanQuery, language);
       setResult(data);
       searchCache[cleanQuery] = data;
-      
-      const newHistory = [word, ...history.filter(h => h !== word)].slice(0, 10);
-      setHistory(newHistory);
-      localStorage.setItem('native_search_history', JSON.stringify(newHistory));
     } catch (error) {
       console.error(error);
     } finally {
       setLoading(false);
     }
+  };
+
+  const togglePin = (e: React.MouseEvent, term: string) => {
+    e.stopPropagation();
+    if (pinned.includes(term)) {
+      // Unpin: Remove from pinned, add to history
+      setPinned(prev => prev.filter(p => p !== term));
+      setHistory(prev => [term, ...prev.filter(h => h !== term)].slice(0, 10));
+    } else {
+      // Pin: Add to pinned, remove from history
+      setPinned(prev => [term, ...prev]);
+      setHistory(prev => prev.filter(h => h !== term));
+    }
+  };
+
+  const clearHistory = () => {
+    setHistory([]);
   };
 
   const playAudio = async (text: string) => {
@@ -95,13 +132,56 @@ const SearchPage: React.FC<SearchPageProps> = ({ language, onSave, savedWords })
         </div>
       </div>
 
-      {!result && !loading && history.length > 0 && (
-        <div className="w-full max-w-xs mt-4 flex flex-wrap gap-2 justify-center animate-in fade-in slide-in-from-bottom-2 duration-500">
-          {history.slice(0, 6).map(h => (
-            <button key={h} onClick={() => { setQuery(h); handleSearch(h); }} className="bg-white/80 text-[11px] font-bold text-gray-500 px-3 py-1.5 rounded-full border border-gray-100 hover:bg-white transition-colors">
-              {h}
-            </button>
-          ))}
+      {!result && !loading && (history.length > 0 || pinned.length > 0) && (
+        <div className="w-full max-w-xs mt-6 animate-in fade-in slide-in-from-bottom-2 duration-500 space-y-4">
+          <div className="flex items-center justify-between px-2">
+            <span className="text-[10px] font-black uppercase tracking-widest text-gray-400">Recent & Pinned</span>
+            {history.length > 0 && (
+              <button 
+                onClick={clearHistory}
+                className="flex items-center space-x-1 text-[10px] font-bold text-red-400 hover:text-red-500 transition-colors uppercase tracking-wide"
+              >
+                <Trash2 className="w-3 h-3" />
+                <span>Clear</span>
+              </button>
+            )}
+          </div>
+          
+          <div className="flex flex-wrap gap-2 justify-center">
+            {/* Pinned Items */}
+            {pinned.map(term => (
+              <button 
+                key={`pinned-${term}`} 
+                onClick={() => { setQuery(term); handleSearch(term); }} 
+                className="group flex items-center space-x-1.5 pl-3 pr-2 py-1.5 rounded-xl border border-[#FFD60A]/30 bg-[#FFD60A]/5 hover:bg-[#FFD60A]/10 transition-all"
+              >
+                <span className="text-[11px] font-bold text-[#1C1C1E]">{term}</span>
+                <div 
+                  onClick={(e) => togglePin(e, term)}
+                  className="p-1 hover:bg-[#FFD60A]/20 rounded-full transition-colors"
+                >
+                   <Pin className="w-3 h-3 text-[#FFD60A] fill-[#FFD60A]" />
+                </div>
+              </button>
+            ))}
+
+            {/* History Items */}
+            {history.map(term => (
+              <button 
+                key={`hist-${term}`} 
+                onClick={() => { setQuery(term); handleSearch(term); }} 
+                className="group flex items-center space-x-1.5 pl-3 pr-2 py-1.5 rounded-xl border border-gray-100 bg-white/80 hover:bg-white transition-all"
+              >
+                <span className="text-[11px] font-bold text-gray-500 group-hover:text-gray-700">{term}</span>
+                <div 
+                  onClick={(e) => togglePin(e, term)}
+                  className="p-1 hover:bg-gray-100 rounded-full transition-colors opacity-30 group-hover:opacity-100"
+                >
+                   <Pin className="w-3 h-3 text-gray-400" />
+                </div>
+              </button>
+            ))}
+          </div>
         </div>
       )}
 
