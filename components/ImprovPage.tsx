@@ -21,7 +21,6 @@ const loadingMessages = [
   "Laugh now, remember later...",
   "Punchy narrative, sticky vocab...",
   "We made all these up just to help you manifest your excellent French...",
-
 ];
 
 const ImprovPage: React.FC<ImprovPageProps> = ({ words, language }) => {
