@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Search, Volume2, Bookmark, BookmarkCheck, Loader2, History, X } from 'lucide-react';
 import { DictionaryEntry, LearningLanguage, SavedWord } from '../types';
 import { searchWord, speakText, decodeAudio } from '../geminiService';
+import Logo from './Logo';
 
 interface SearchPageProps {
   language: LearningLanguage;
@@ -69,12 +70,9 @@ const SearchPage: React.FC<SearchPageProps> = ({ language, onSave, savedWords })
       
       {/* Search Header Area - Only visible on landing */}
       {!result && !loading && (
-        <div className="text-center mb-10 animate-in fade-in zoom-in-95 duration-500">
-          <div className="w-16 h-16 bg-[#FFD60A] rounded-2xl mx-auto flex items-center justify-center shadow-lg mb-4">
-            <Search className="text-white w-8 h-8" strokeWidth={3} />
-          </div>
-          <h1 className="text-4xl font-black tracking-tight">Native</h1>
-          <p className="text-gray-400 text-sm font-bold uppercase tracking-widest mt-1">{language} Excellence</p>
+        <div className="text-center mb-6 animate-in fade-in zoom-in-95 duration-700">
+          <Logo size={240} className="mb-4 hover:scale-105 transition-transform duration-500 cursor-pointer" />
+          <p className="text-gray-400 text-sm font-bold uppercase tracking-[0.2em] mt-2">{language} Excellence</p>
         </div>
       )}
 

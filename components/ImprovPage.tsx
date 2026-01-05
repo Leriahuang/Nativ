@@ -1,8 +1,9 @@
 
 import React, { useState, useEffect } from 'react';
-import { Mic2, Play, Pause, RotateCcw, Loader2, Sparkles, CheckCircle2, ChevronDown, ChevronUp } from 'lucide-react';
+import { Mic2, Play, Pause, RotateCcw, Loader2, CheckCircle2, ChevronDown, ChevronUp } from 'lucide-react';
 import { SavedWord, LearningLanguage, PodcastStory } from '../types';
 import { generatePodcast, speakText, decodeAudio } from '../geminiService';
+import Logo from './Logo';
 
 interface ImprovPageProps {
   words: SavedWord[];
@@ -89,10 +90,10 @@ const ImprovPage: React.FC<ImprovPageProps> = ({ words, language }) => {
     return (
       <div className="h-full flex flex-col items-center justify-center p-6 space-y-8 animate-in fade-in duration-500">
         <div className="relative">
-          <div className="w-32 h-32 bg-[#FFD60A]/10 rounded-full flex items-center justify-center">
-            <Loader2 className="w-16 h-16 text-[#FFD60A] animate-spin" strokeWidth={3} />
+          <Logo size={180} showText={false} className="animate-bounce" />
+          <div className="absolute -bottom-4 left-1/2 -translate-x-1/2">
+             <Loader2 className="w-8 h-8 text-[#FFD60A] animate-spin" strokeWidth={3} />
           </div>
-          <Sparkles className="absolute -top-2 -right-2 text-[#FFD60A] animate-pulse" />
         </div>
         <div className="text-center space-y-3">
           <h2 className="text-2xl font-black transition-all duration-500">{loadingMessages[currentMessageIndex]}</h2>
@@ -168,7 +169,7 @@ const ImprovPage: React.FC<ImprovPageProps> = ({ words, language }) => {
 
         <button 
           onClick={() => { setStory(null); stopPodcast(); }}
-          className="w-full bg-[#1C1C1E] text-white py-4.5 rounded-2xl font-black text-sm uppercase tracking-widest shadow-lg flex items-center justify-center space-x-2 active:scale-95 transition-all"
+          className="w-full bg-[#1C1C1E] text-white py-6 rounded-2xl font-black text-lg uppercase tracking-widest shadow-xl flex items-center justify-center space-x-2 active:scale-[0.98] transition-all"
         >
           <span>Regenerate Punchline</span>
         </button>
@@ -184,32 +185,37 @@ const ImprovPage: React.FC<ImprovPageProps> = ({ words, language }) => {
       </header>
 
       <div className="flex-1 overflow-y-auto pr-1">
-        <div className="grid grid-cols-1 gap-3">
+        <div className="grid grid-cols-2 gap-3">
           {words.length === 0 && (
-            <div className="py-20 text-center space-y-4">
-              <div className="w-16 h-16 bg-gray-50 rounded-2xl mx-auto flex items-center justify-center">
-                <Mic2 className="text-gray-200" />
-              </div>
-              <p className="text-gray-400 font-bold uppercase text-[10px] tracking-widest">Your notebook is empty</p>
+            <div className="col-span-2 py-20 text-center space-y-4 flex flex-col items-center">
+              <Logo size={120} showText={false} className="opacity-20 grayscale" />
+              <p className="text-gray-400 font-bold uppercase text-[10px] tracking-widest mt-4">Your notebook is empty</p>
             </div>
           )}
           {words.map(w => (
             <button
               key={w.id}
               onClick={() => toggleWord(w.id)}
-              className={`p-4 rounded-2xl flex justify-between items-center transition-all border-2 ${
+              className={`p-3 rounded-2xl flex flex-col text-left transition-all border-2 h-24 relative overflow-hidden ${
                 selectedWordIds.has(w.id) 
                   ? 'bg-white border-[#FFD60A] shadow-md' 
                   : 'bg-white border-transparent shadow-sm hover:border-gray-100'
               }`}
             >
-              <div className="text-left">
-                <p className="font-black text-lg text-[#1C1C1E]">{w.word}</p>
-                <p className="text-[11px] text-gray-400 font-bold uppercase tracking-tight truncate max-w-[200px]">{w.meaning}</p>
+              <div className="flex justify-between items-start w-full">
+                <p className={`font-black text-base leading-tight ${selectedWordIds.has(w.id) ? 'text-[#1C1C1E]' : 'text-[#3A3A3C]'}`}>
+                  {w.word}
+                </p>
+                {selectedWordIds.has(w.id) && (
+                  <CheckCircle2 className="text-[#FFD60A] w-4 h-4 shrink-0" />
+                )}
               </div>
-              <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors ${selectedWordIds.has(w.id) ? 'bg-[#FFD60A] border-[#FFD60A]' : 'border-gray-100'}`}>
-                {selectedWordIds.has(w.id) && <CheckCircle2 className="text-white w-4 h-4" />}
-              </div>
+              <p className="text-[10px] text-gray-400 font-bold uppercase tracking-tight mt-1 line-clamp-2">
+                {w.meaning}
+              </p>
+              {selectedWordIds.has(w.id) && (
+                <div className="absolute bottom-0 left-0 right-0 h-1 bg-[#FFD60A]" />
+              )}
             </button>
           ))}
         </div>
@@ -217,19 +223,25 @@ const ImprovPage: React.FC<ImprovPageProps> = ({ words, language }) => {
 
       <div className="pt-4 bg-[#F2F2F7] sticky bottom-0 border-t border-gray-100 space-y-4">
         <div className="flex justify-between items-center px-1">
-          <span className="text-xs font-black uppercase tracking-widest text-gray-400">{selectedWordIds.size}/10 selected</span>
-          <span className="text-[10px] text-gray-400 font-bold uppercase tracking-tight">Need 5-10 words</span>
+          <div className="flex items-center space-x-2">
+            <span className={`text-[10px] font-black uppercase tracking-widest ${selectedWordIds.size >= 5 ? 'text-[#30D158]' : 'text-gray-400'}`}>
+              {selectedWordIds.size}/10 selected
+            </span>
+          </div>
+          <span className="text-[10px] text-gray-400 font-bold uppercase tracking-tight">
+            {selectedWordIds.size < 5 ? `Need ${5 - selectedWordIds.size} more` : 'Ready to roll'}
+          </span>
         </div>
         <button
           disabled={selectedWordIds.size < 5}
           onClick={handleGenerate}
-          className={`w-full py-4.5 rounded-2xl font-black text-sm uppercase tracking-widest flex items-center justify-center space-x-2 transition-all ${
+          className={`w-full py-6 rounded-2xl font-black text-lg uppercase tracking-widest flex items-center justify-center space-x-3 transition-all ${
             selectedWordIds.size >= 5 
-              ? 'bg-[#FFD60A] text-white shadow-lg active:scale-95 active:shadow-none' 
-              : 'bg-gray-200 text-gray-400 cursor-not-allowed'
+              ? 'bg-[#FFD60A] text-white shadow-xl active:scale-[0.98] active:shadow-md' 
+              : 'bg-gray-200 text-gray-400 cursor-not-allowed shadow-none'
           }`}
         >
-          <Mic2 className="w-4 h-4" />
+          <Mic2 className={`w-6 h-6 ${selectedWordIds.size >= 5 ? 'animate-pulse' : ''}`} />
           <span>Generate Story</span>
         </button>
       </div>

@@ -3,6 +3,7 @@ import React, { useState, useMemo } from 'react';
 import { BookOpen, Trophy, ArrowRight, CheckCircle2, XCircle, AlertCircle, Volume2 } from 'lucide-react';
 import { SavedWord, LearningLanguage } from '../types';
 import { speakText, decodeAudio } from '../geminiService';
+import Logo from './Logo';
 
 interface NotebookPageProps {
   words: SavedWord[];
@@ -75,17 +76,15 @@ const NotebookPage: React.FC<NotebookPageProps> = ({ words, language, onUpdateSr
     return (
       <div className="p-6 space-y-8 h-full flex flex-col">
         <header>
-          <h1 className="text-4xl font-bold text-[#1C1C1E]">Notebook</h1>
-          <p className="text-gray-500">{words.length} words collected.</p>
+          <h1 className="text-4xl font-black text-[#1C1C1E]">Notebook</h1>
+          <p className="text-gray-500 font-medium">{words.length} words collected.</p>
         </header>
 
-        <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 flex-1 flex flex-col justify-center items-center text-center space-y-6">
-          <div className="w-24 h-24 bg-[#FFD60A]/20 rounded-full flex items-center justify-center">
-            <BookOpen className="w-12 h-12 text-[#FFD60A]" />
-          </div>
+        <div className="bg-white rounded-[40px] p-8 shadow-sm border border-gray-100 flex-1 flex flex-col justify-center items-center text-center space-y-6">
+          <Logo size={160} showText={false} className="mb-2" />
           <div>
-            <h2 className="text-2xl font-bold">Daily Review</h2>
-            <p className="text-gray-500 mt-2">
+            <h2 className="text-2xl font-black">Daily Review</h2>
+            <p className="text-gray-500 mt-2 font-medium">
               {reviewQueue.length > 0 
                 ? `You have ${reviewQueue.length} words to review today.` 
                 : "You're all caught up! Go search some new words."}
@@ -94,7 +93,7 @@ const NotebookPage: React.FC<NotebookPageProps> = ({ words, language, onUpdateSr
           {reviewQueue.length > 0 && (
             <button
               onClick={() => setSessionActive(true)}
-              className="w-full bg-[#FFD60A] text-white py-4 rounded-2xl font-bold text-lg shadow-lg active:scale-95 transition-all flex items-center justify-center space-x-2"
+              className="w-full bg-[#FFD60A] text-white py-4.5 rounded-2xl font-black text-sm uppercase tracking-widest shadow-lg active:scale-95 transition-all flex items-center justify-center space-x-2"
             >
               <span>Start Review</span>
               <ArrowRight className="w-5 h-5" />
@@ -103,12 +102,12 @@ const NotebookPage: React.FC<NotebookPageProps> = ({ words, language, onUpdateSr
         </div>
 
         <div className="space-y-4">
-          <h3 className="text-xs font-bold uppercase text-gray-400 tracking-widest">Saved Words</h3>
-          <div className="grid grid-cols-2 gap-4">
-            {words.slice(0, 10).map(w => (
+          <h3 className="text-[10px] font-black uppercase text-gray-400 tracking-widest px-1">Recent words</h3>
+          <div className="grid grid-cols-2 gap-3">
+            {words.slice(0, 4).map(w => (
               <div key={w.id} className="bg-white p-4 rounded-2xl shadow-sm border border-gray-100">
-                <p className="font-bold text-lg">{w.word}</p>
-                <p className="text-xs text-gray-500 truncate">{w.meaning}</p>
+                <p className="font-black text-md truncate">{w.word}</p>
+                <p className="text-[10px] text-gray-400 font-bold uppercase tracking-tight truncate">{w.meaning}</p>
               </div>
             ))}
           </div>
