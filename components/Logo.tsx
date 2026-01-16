@@ -1,5 +1,4 @@
 import React from 'react';
-import logoUrl from '../../assets/logo.png';
 
 interface LogoProps {
   className?: string;
@@ -13,8 +12,8 @@ const Logo: React.FC<LogoProps> = ({ className = "", size = 200 }) => {
       style={{ width: size, height: 'auto' }}
     >
       <img 
-        src={logoUrl}
-        alt="Speak Like Nativ Logo" 
+        src="/assets/logo.png"
+        alt="Nativ Logo" 
         className="w-full h-auto object-contain"
         loading="eager"
         style={{ maxWidth: '100%' }}
