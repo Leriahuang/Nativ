@@ -11,7 +11,7 @@ const SettingsPage: React.FC<SettingsPageProps> = ({ language, setLanguage }) =>
   return (
     <div className="p-6 space-y-8">
       <header>
-        <h1 className="text-4xl font-bold text-[#1C1C1E]">Settings</h1>
+        <h1 className="text-4xl font-black text-[#1C1C1E]">Settings</h1>
         <p className="text-gray-500">Configure your experience.</p>
       </header>
 
