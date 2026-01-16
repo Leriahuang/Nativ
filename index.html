@@ -4,6 +4,34 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Nativ - Speak Like a Local</title>
+
+    <!-- Favicon (already added, good job!) -->
+    <link rel="icon" type="image/png" href="/assets/logo.png" /> 
+
+    <!-- --- START: Home Screen Icon additions --- -->
+
+    <!-- Web App Manifest (crucial for Android/Chrome on desktop) -->
+    <!-- This points to a manifest.json file that defines app properties -->
+    <link rel="manifest" href="/manifest.json" /> 
+
+    <!-- Apple Touch Icon (specific for iOS devices) -->
+    <!-- This is the icon iOS uses when added to home screen -->
+    <link rel="apple-touch-icon" sizes="180x180" href="/assets/logo.png" />
+
+    <!-- Safari Pinned Tab Icon (optional, for macOS Safari pinned tabs) -->
+    <!-- Requires an SVG for best results, but a PNG can work as fallback -->
+    <link rel="mask-icon" href="/assets/logo.svg" color="#000000"> 
+
+    <!-- iOS Status Bar Styling (optional, but good for app-like feel) -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Nativ" />
+
+    <!-- Theme Color for browsers (changes browser UI color, e.g., Android Chrome address bar) -->
+    <meta name="theme-color" content="#FFD60A" /> 
+
+    <!-- --- END: Home Screen Icon additions --- -->
+
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&family=JetBrains+Mono&display=swap" rel="stylesheet">
     <style>
