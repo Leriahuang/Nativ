@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useCallback } from 'react';
 import { AppTab, LearningLanguage, SavedWord, DictionaryEntry } from './types';
 import SearchPage from './components/SearchPage';
@@ -107,7 +106,7 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col h-screen max-w-md mx-auto bg-[#F2F2F7] overflow-hidden relative shadow-2xl">
+    <div className="flex flex-col h-screen max-w-md mx-auto bg-[#FBFDFB] overflow-hidden relative shadow-2xl">
       <main className="flex-1 overflow-y-auto pb-24">
         {renderContent()}
       </main>

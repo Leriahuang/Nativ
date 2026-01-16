@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Mic2, Play, Pause, RotateCcw, Loader2, CheckCircle2, ChevronDown, ChevronUp } from 'lucide-react';
 import { SavedWord, LearningLanguage, PodcastStory } from '../types';
@@ -226,14 +225,14 @@ const ImprovPage: React.FC<ImprovPageProps> = ({ words, language }) => {
         </div>
       </div>
 
-      <div className="pt-4 bg-[#F2F2F7] sticky bottom-0 border-t border-gray-100 space-y-4 z-10 pb-4">
+      <div className="pt-4 bg-[#FBFDFB] sticky bottom-0 border-t border-gray-100 space-y-4 z-10 pb-4">
         <div className="flex justify-between items-center px-1">
           <div className="flex items-center space-x-2">
             <span className={`text-[11px] font-black uppercase tracking-widest ${selectedWordIds.size >= 5 ? 'text-[#30D158]' : 'text-gray-400'}`}>
               {selectedWordIds.size}/10 selected
             </span>
           </div>
-          <span className="text-[10px] text-gray-400 font-bold uppercase tracking-tight">
+          <span className="text-xs font-bold text-gray-400 uppercase tracking-widest">
             {selectedWordIds.size < 5 ? `Need ${5 - selectedWordIds.size} more` : 'Mic is hot!'}
           </span>
         </div>
