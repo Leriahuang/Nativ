@@ -106,8 +106,8 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col h-screen max-w-md mx-auto bg-[#FBFDFB] overflow-hidden relative shadow-2xl">
-      <main className="flex-1 overflow-y-auto pb-24">
+    <div className="flex flex-col h-[100dvh] max-w-md mx-auto bg-[#FBFDFB] overflow-hidden relative shadow-2xl">
+      <main className="flex-1 overflow-y-auto pb-28">
         {renderContent()}
       </main>
       <BottomNav activeTab={activeTab} setActiveTab={setActiveTab} />
