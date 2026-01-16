@@ -45,7 +45,7 @@ const SettingsPage: React.FC<SettingsPageProps> = ({ language, setLanguage }) =>
               </div>
               <div>
                 <p className="font-bold">Base Language</p>
-                <p className="text-sm text-gray-500">Fixed to English</p>
+                <p className="text-sm text-gray-500">English</p>
               </div>
             </div>
             <span className="font-bold text-sm text-gray-400">English</span>
