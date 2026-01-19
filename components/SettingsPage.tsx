@@ -78,7 +78,7 @@ const SettingsPage: React.FC<SettingsPageProps> = ({ language, setLanguage }) =>
           <span>Reset All Data</span>
         </button>
         <p className="text-center text-[10px] text-gray-400 mt-6 font-bold uppercase tracking-widest">
-          Nativ v1.0.4 • Crafted with Gemini
+          Nativ v1.0.4
         </p>
       </section>
     </div>
