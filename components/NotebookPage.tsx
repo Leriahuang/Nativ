@@ -1,9 +1,8 @@
-
 import React, { useState, useMemo } from 'react';
 import { BookOpen, Trophy, ArrowRight, CheckCircle2, XCircle, AlertCircle, Volume2 } from 'lucide-react';
 import { SavedWord, LearningLanguage } from '../types';
 import { speakText, decodeAudio } from '../geminiService';
-import Logo from './Logo';
+import Logo from "./Logo";
 
 interface NotebookPageProps {
   words: SavedWord[];
@@ -13,18 +12,31 @@ interface NotebookPageProps {
 
 const NotebookPage: React.FC<NotebookPageProps> = ({ words, language, onUpdateSrs }) => {
   const [sessionActive, setSessionActive] = useState(false);
+  const [reviewQueue, setReviewQueue] = useState<SavedWord[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [showBack, setShowBack] = useState(false);
   const [input, setInput] = useState('');
   const [feedback, setFeedback] = useState<'none' | 'correct' | 'incorrect' | 'typo'>('none');
 
-  const reviewQueue = useMemo(() => {
-    return words
-      .filter(w => w.nextReviewDate <= Date.now())
-      .slice(0, 30);
+  // Calculate due words for the dashboard stats
+  const dueWords = useMemo(() => {
+    return words.filter(w => w.nextReviewDate <= Date.now());
   }, [words]);
 
-  const currentWord = reviewQueue[currentIndex];
+  const startSession = () => {
+    // Snapshot the current due words to create a stable queue for this session
+    const queue = dueWords.slice(0, 30);
+    if (queue.length === 0) return;
+    
+    setReviewQueue(queue);
+    setCurrentIndex(0);
+    setSessionActive(true);
+    setShowBack(false);
+    setInput('');
+    setFeedback('none');
+  };
+
+  const currentWord = sessionActive ? reviewQueue[currentIndex] : null;
 
   const handleCheck = () => {
     if (!currentWord) return;
@@ -47,7 +59,10 @@ const NotebookPage: React.FC<NotebookPageProps> = ({ words, language, onUpdateSr
   };
 
   const handleSrsRating = (rating: 'again' | 'hard' | 'good' | 'easy') => {
+    if (!currentWord) return;
+    
     onUpdateSrs(currentWord.id, rating);
+    
     if (currentIndex < reviewQueue.length - 1) {
       setCurrentIndex(currentIndex + 1);
       setShowBack(false);
@@ -55,6 +70,7 @@ const NotebookPage: React.FC<NotebookPageProps> = ({ words, language, onUpdateSr
       setFeedback('none');
     } else {
       setSessionActive(false);
+      setReviewQueue([]);
     }
   };
 
@@ -72,7 +88,7 @@ const NotebookPage: React.FC<NotebookPageProps> = ({ words, language, onUpdateSr
     }
   };
 
-  if (!sessionActive) {
+  if (!sessionActive || !currentWord) {
     return (
       <div className="p-6 space-y-8 h-full flex flex-col">
         <header>
@@ -85,14 +101,14 @@ const NotebookPage: React.FC<NotebookPageProps> = ({ words, language, onUpdateSr
           <div>
             <h2 className="text-2xl font-black text-[#1C1C1E]">Daily Review</h2>
             <p className="text-gray-500 mt-2 font-medium max-w-[200px] mx-auto">
-              {reviewQueue.length > 0 
-                ? `You have ${reviewQueue.length} words to review today.` 
+              {dueWords.length > 0 
+                ? `You have ${dueWords.length} words to review today.` 
                 : "You're all caught up! Go search some new words."}
             </p>
           </div>
-          {reviewQueue.length > 0 && (
+          {dueWords.length > 0 && (
             <button
-              onClick={() => setSessionActive(true)}
+              onClick={startSession}
               className="w-full bg-[#FFD60A] text-white py-5 rounded-2xl font-black text-sm uppercase tracking-widest shadow-lg active:scale-95 transition-all flex items-center justify-center space-x-3"
             >
               <span>Start Review</span>
@@ -116,7 +132,8 @@ const NotebookPage: React.FC<NotebookPageProps> = ({ words, language, onUpdateSr
     );
   }
 
-  const randomExample = currentWord.examples[0];
+  // Safe access to examples with fallback
+  const randomExample = currentWord.examples?.[0] || { original: currentWord.word, translation: currentWord.meaning };
 
   return (
     <div className="p-6 h-full flex flex-col space-y-6">
@@ -199,11 +216,11 @@ const NotebookPage: React.FC<NotebookPageProps> = ({ words, language, onUpdateSr
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2 bg-gray-50/50 p-3 rounded-2xl border border-gray-100">
                   <p className="text-[9px] font-black uppercase text-gray-400 tracking-wider">Expression</p>
-                  <p className="text-xs font-bold text-[#1C1C1E]">{currentWord.expressions[0].original}</p>
+                  <p className="text-xs font-bold text-[#1C1C1E]">{currentWord.expressions?.[0]?.original || '-'}</p>
                 </div>
                 <div className="space-y-2 bg-gray-50/50 p-3 rounded-2xl border border-gray-100">
                   <p className="text-[9px] font-black uppercase text-gray-400 tracking-wider">Synonym</p>
-                  <p className="text-xs font-bold text-[#1C1C1E]">{currentWord.synonyms[0].word}</p>
+                  <p className="text-xs font-bold text-[#1C1C1E]">{currentWord.synonyms?.[0]?.word || '-'}</p>
                 </div>
               </div>
             </div>

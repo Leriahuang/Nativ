@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Search, Volume2, Bookmark, BookmarkCheck, Loader2, X, Pin, Trash2 } from 'lucide-react';
 import { DictionaryEntry, LearningLanguage, SavedWord } from '../types';
