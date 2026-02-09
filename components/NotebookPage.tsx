@@ -64,7 +64,7 @@ const NotebookPage: React.FC<NotebookPageProps> = ({ words, language, onUpdateSr
     onUpdateSrs(currentWord.id, rating);
     
     if (currentIndex < reviewQueue.length - 1) {
-      setCurrentIndex(currentIndex + 1);
+      setCurrentIndex(prev => prev + 1);
       setShowBack(false);
       setInput('');
       setFeedback('none');
@@ -88,6 +88,36 @@ const NotebookPage: React.FC<NotebookPageProps> = ({ words, language, onUpdateSr
     }
   };
 
+  const getClozeExample = (word: string, exampleText: string) => {
+    // 1. Try to find bracketed content (e.g. "Je suis [fatigué]")
+    const bracketMatch = exampleText.match(/\[(.*?)\]/);
+    if (bracketMatch) {
+      return {
+        display: exampleText.replace(/\[.*?\]/g, '_____'),
+        answer: bracketMatch[1] // The word inside brackets
+      };
+    }
+
+    // 2. Fallback: Try regex matching the word
+    // Strip common articles to improve matching chances
+    const cleanWord = word.replace(/^(le|la|les|l'|un|une|des|se|s'|el|la|los|las)\s+/i, '');
+    const regex = new RegExp(`(${cleanWord})`, 'gi');
+    
+    if (regex.test(exampleText)) {
+      return {
+        display: exampleText.replace(regex, '_____'),
+        answer: word
+      };
+    }
+
+    // 3. Fallback failed: just hide the exact word if present, otherwise show text (sad path)
+    return {
+      display: exampleText.replace(new RegExp(word, 'gi'), '_____'),
+      answer: word
+    };
+  };
+
+  // Safe access checks to prevent crashes
   if (!sessionActive || !currentWord) {
     return (
       <div className="p-6 space-y-8 h-full flex flex-col">
@@ -132,8 +162,11 @@ const NotebookPage: React.FC<NotebookPageProps> = ({ words, language, onUpdateSr
     );
   }
 
-  // Safe access to examples with fallback
+  // Double check existence to be absolutely sure before accessing properties
+  if (!currentWord) return null;
+
   const randomExample = currentWord.examples?.[0] || { original: currentWord.word, translation: currentWord.meaning };
+  const cloze = getClozeExample(currentWord.word, randomExample.original);
 
   return (
     <div className="p-6 h-full flex flex-col space-y-6">
@@ -154,7 +187,7 @@ const NotebookPage: React.FC<NotebookPageProps> = ({ words, language, onUpdateSr
             <div className="space-y-4 text-center">
               <span className="text-xs font-black uppercase tracking-widest text-[#FFD60A]">Fill in the blank</span>
               <p className="text-2xl font-medium leading-relaxed italic text-[#1C1C1E]">
-                "{randomExample.original.replace(new RegExp(currentWord.word, 'gi'), '_____')}"
+                "{cloze.display}"
               </p>
               <p className="text-gray-400 text-sm">({randomExample.translation})</p>
             </div>

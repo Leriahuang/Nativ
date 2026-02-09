@@ -9,6 +9,7 @@ export async function searchWord(word: string, lang: LearningLanguage): Promise<
     model: 'gemini-3-flash-preview',
     contents: `Provide a detailed dictionary entry for the word "${word}" in ${lang} for an advanced learner (B2+). 
     Focus on colloquialisms, slang, and high-frequency usage. 
+    In the 'examples' list, wrap the usage of the target word (including conjugations) in square brackets, e.g., "Je suis [fatigué]".
     Output must be in JSON format.`,
     config: {
       thinkingConfig: { thinkingBudget: 0 },

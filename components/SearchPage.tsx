@@ -119,7 +119,7 @@ const SearchPage: React.FC<SearchPageProps> = ({ language, onSave, savedWords })
           onChange={(e) => setQuery(e.target.value)}
           onKeyDown={(e) => e.key === 'Enter' && handleSearch(query)}
           placeholder={`Search ${language}...`}
-          className="w-full bg-white rounded-2xl py-4 pl-12 pr-12 text-md shadow-sm border-none focus:ring-2 focus:ring-[#FFD60A] transition-all"
+          className="w-full bg-white rounded-2xl py-4 pl-12 pr-12 text-base shadow-sm border-none focus:ring-2 focus:ring-[#FFD60A] transition-all"
         />
         <div className="absolute inset-y-0 right-3 flex items-center space-x-1">
           {query && !loading && (
