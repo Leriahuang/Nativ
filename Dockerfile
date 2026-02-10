@@ -1,10 +1,10 @@
-# Stage 1: build the app
+# ---------- Stage 1: Build the app ----------
 FROM node:20-alpine AS build
 
-# Create app directory
+# Set working directory
 WORKDIR /app
 
-# Install dependencies
+# Install dependencies (use Docker layer caching)
 COPY package*.json ./
 RUN npm ci
 
@@ -12,22 +12,28 @@ RUN npm ci
 COPY . .
 RUN npm run build
 
-# Stage 2: run the built app
+# ---------- Stage 2: Serve static files ----------
 FROM node:20-alpine
+
+# Create an unprivileged user (Cloud Run friendly)
+RUN addgroup -S appgroup && adduser -S appuser -G appgroup
 
 WORKDIR /app
 
-# Copy build output
+# Copy build output only
 COPY --from=build /app/dist ./dist
 
 # Install a lightweight static file server
 RUN npm install -g serve
 
-# Cloud Run injects $PORT; default to 8080 if not set
+# Cloud Run injects $PORT; default to 8080 for local dev
 ENV PORT=8080
 
-# Expose the port for local runs (Cloud Run uses $PORT env)
+# Expose for local testing (Cloud Run ignores EXPOSE but it's good metadata)
 EXPOSE 8080
 
-# Serve the static build
+# Use non‑root user
+USER appuser
+
+# Start the server
 CMD ["sh", "-c", "serve -s dist -l ${PORT:-8080}"]
